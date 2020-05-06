@@ -6,7 +6,7 @@ LABEL \
 
 # Waiting a new server.xml feature to use a better solution
 # https://github.com/OpenLiberty/ci.maven/issues/705
-COPY --chown=1001:0 src/main/liberty/config/resources/mysql-connector-java-5.1.48.jar /config/resources
+COPY --chown=1001:0 src/main/liberty/config/resources/mysql-connector-java-8.0.19.jar /config/resources
 
 # Sending Liberty configuration 
 COPY --chown=1001:0 src/main/liberty/config /config/
