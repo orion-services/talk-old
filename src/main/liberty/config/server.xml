@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server description="${project.name}">
+
+    <featureManager>
+        <feature>microProfile-3.2</feature>
+        <feature>jpa-2.2</feature>
+        <feature>websocket-1.1</feature>
+        <feature>ejb-3.2</feature>
+    </featureManager>
+
+    <httpEndpoint id="defaultHttpEndpoint" httpPort="9081" httpsPort="9444" />
+
+    <webApplication location="${project.name}.war" contextRoot="/" />
+    <mpMetrics authentication="false" />
+
+    <!-- This is the keystore that will be used by SSL and by JWT. -->
+    <keyStore id="defaultKeyStore" location="public.jks" type="JKS" password="atbash" />
+
+    <!-- The MP JWT configuration that injects the caller's JWT into a ResourceScoped bean for inspection. -->
+    <mpJwt id="jwtUserConsumer" keyName="theKeyId" audiences="targetService" issuer="${jwt.issuer}" />
+
+    <!-- 
+        Waiting a new server.xml feature to use a better solution
+        https://github.com/OpenLiberty/ci.maven/issues/705
+    -->
+    <library id="MySQLLib" name="MySQL Connector">
+        <fileset dir="${server.config.dir}/resources" id="mysql-connector-jar" includes="mysql-*.jar" />
+    </library>
+
+    <!-- Declare the Worklight Server project database -->
+    <dataSource jndiName="jdbc/OrionTalkServiceDS">
+        <jdbcDriver libraryRef="MySQLLib" />
+        <properties databaseName="orion-talk-service" serverName="localhost" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
+    </dataSource>
+
+</server>
