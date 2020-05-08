@@ -18,6 +18,7 @@ package orion.talk.service;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -70,14 +71,19 @@ public class ServiceController {
     @Transactional
     public TextMessage createTextMessage(@FormParam("token") final String token,
             @FormParam("message") final String message) {
-        System.out.println(token);
-        System.out.println(message);
-        Channel channel = daoChannel.find("token", token);
 
-        final TextMessage textMessage = new TextMessage();
-        textMessage.setText(message);
-        textMessage.setChannel(channel);
-        daoTextMessage.create(textMessage);
+        TextMessage textMessage = new TextMessage();
+        try {
+            Channel channel = daoChannel.find("token", token);
+
+            textMessage = new TextMessage();
+            textMessage.setMessage(message);
+            textMessage.setChannel(channel);
+            daoTextMessage.create(textMessage);
+
+        } catch (NoResultException e) {
+            System.out.println(e);
+        }
 
         return textMessage;
     }

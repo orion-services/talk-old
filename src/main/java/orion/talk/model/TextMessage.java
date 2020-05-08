@@ -40,6 +40,6 @@ public class TextMessage implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Channel channel;
     private String idUser;
-    private String text;
+    private String message;
 
 }

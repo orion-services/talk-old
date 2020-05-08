@@ -86,7 +86,7 @@ public class WebsocketController {
         if (channel != null) {
             final TextMessage textMessage = new TextMessage();
             textMessage.setChannel(channel);
-            textMessage.setText(message);
+            textMessage.setMessage(message);
             this.daoTextMessage.create(textMessage);
         }
         this.sendToAll(message, token);
