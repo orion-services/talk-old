@@ -16,6 +16,8 @@
  */
 package orion.talk.model;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,24 +31,43 @@ import javax.persistence.OneToMany;
 
 import lombok.Data;
 
+/**
+ * Represents a space of a talk among users
+ */
 @Data
 @Entity
 public class Channel {
 
+    /** primary key */
     @Id
     @GeneratedValue
     private long id;
+
+    /** indicates when the channel was created */
+    private Timestamp creationDate;
+
+    /** the token used to represent the channel */
     private String token;
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    /** the text messages of a channel */
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<TextMessage> messages;
 
+    // ** constructor */
     public Channel() {
+        // generates the tocen
         this.messages = new HashSet<TextMessage>();
-        this.token = this.generateHash();
+        this.token = this.generateToken();
+
+        // store when the channel was created
+        Calendar calendar = Calendar.getInstance();
+        this.creationDate = new Timestamp(calendar.getTimeInMillis());
     }
 
-    public String generateHash() {
+    /**
+     * Generates a token to represent a channel
+     */
+    public String generateToken() {
         return UUID.randomUUID().toString();
     }
 }

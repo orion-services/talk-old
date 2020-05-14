@@ -99,7 +99,15 @@ public class ServiceController {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Channel loadChannel(@PathParam("token") final String token) {
-        return daoChannel.find("token", token);
+        Channel channel = null;
+        try {
+            channel = daoChannel.find("token", token);
+        } catch (NoResultException e) {
+            System.out.println("Channel object not found with token: " + token);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return channel;
     }
 
 }

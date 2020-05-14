@@ -8,16 +8,22 @@
         <feature>ejb-3.2</feature>
     </featureManager>
 
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="9081" httpsPort="9444" />
+    <applicationManager autoExpand="true" />
 
-    <webApplication location="${project.name}.war" contextRoot="/" />
     <mpMetrics authentication="false" />
+
+    <variable name="default.http.port" defaultValue="9081" />
+    <variable name="default.https.port" defaultValue="9444" />
+    <variable name="app.context.root" defaultValue="/" />
+
+    <httpEndpoint host="*" httpPort="${default.http.port}" httpsPort="${default.https.port}" id="defaultHttpEndpoint" />
 
     <!-- This is the keystore that will be used by SSL and by JWT. -->
     <keyStore id="defaultKeyStore" location="public.jks" type="JKS" password="atbash" />
-
     <!-- The MP JWT configuration that injects the caller's JWT into a ResourceScoped bean for inspection. -->
     <mpJwt id="jwtUserConsumer" keyName="theKeyId" audiences="targetService" issuer="${jwt.issuer}" />
+
+    <webApplication location="${project.name}.war" contextRoot="${app.context.root}" />
 
     <!-- 
         Waiting a new server.xml feature to use a better solution
@@ -30,7 +36,8 @@
     <!-- Declare the Worklight Server project database -->
     <dataSource jndiName="jdbc/OrionTalkServiceDS">
         <jdbcDriver libraryRef="MySQLLib" />
-        <properties databaseName="orion-talk-service" serverName="db" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
+        <!-- In development mode, use: serverName="localhost" portNumber="3307"  -->
+        <properties databaseName="orion-talk-service" serverName="db" portNumber="3306" user="orion-talk-service" password="orion-talk-service" />
     </dataSource>
 
 </server>

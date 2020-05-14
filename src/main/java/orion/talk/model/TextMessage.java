@@ -17,6 +17,8 @@
 package orion.talk.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,19 +29,34 @@ import javax.persistence.ManyToOne;
 
 import lombok.Data;
 
+/**
+ * Represents a message in text format
+ */
 @Data
 @Entity
 public class TextMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /** primary key */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    /** the reference for a channel */
     @ManyToOne(fetch = FetchType.EAGER)
     private Channel channel;
-    private String idUser;
+
+    /** the time stamp of a message */
+    private Timestamp time;
+
+    /** the text of a message */
     private String message;
+
+    // Constructor
+    public TextMessage() {
+        Calendar calendar = Calendar.getInstance();
+        this.time = new Timestamp(calendar.getTimeInMillis());
+    }
 
 }
