@@ -27,6 +27,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import lombok.Data;
@@ -53,9 +56,15 @@ public class Channel {
     @OneToMany(mappedBy = "channel", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<TextMessage> messages;
 
+    /** The users of a channel */
+    // @JoinColumn(name = "channel_id")
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "CHANNEL_USER", joinColumns = @JoinColumn(name = "CHANNEL_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    private Set<User> users;
+
     // ** constructor */
     public Channel() {
-        // generates the tocen
+        // generates the token
         this.messages = new HashSet<TextMessage>();
         this.token = this.generateToken();
 
@@ -69,5 +78,23 @@ public class Channel {
      */
     public String generateToken() {
         return UUID.randomUUID().toString();
+    }
+
+    /**
+     * Stores a Text Message in a channel
+     * 
+     * @param message
+     */
+    public void addMessage(TextMessage message) {
+        this.messages.add(message);
+    }
+
+    /**
+     * Adds a user to a channel
+     * 
+     * @param user The user object
+     */
+    public void addUser(User user) {
+        this.users.add(user);
     }
 }
