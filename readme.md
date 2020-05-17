@@ -2,15 +2,15 @@
 
 Orion Talk Service is a simple text message microservice that implements both an Web Service and Web Socket APIs.
 
-## Run with Docker Compose
+## Run with docker compose
 
-The easer way to install and execute the Orion Talk Service is to use docker-composer. Once Docker is installed, you can run the bellow command in the  :
+The easer way to install and execute the Orion Talk Service is to use docker-composer. Once docker compose is installed, you can run the bellow command in the:
 
     docker-compose up -d
 
 Note: Default database root and password is: orion-talk-service
 
-## Docker image
+## Build a docker image
 
 To create a Docker image for Orion Talk Service:
 
@@ -18,9 +18,9 @@ To create a Docker image for Orion Talk Service:
 
     docker build -t orion-talk-image .
 
-    docker run -d --name orion-talk-service -p 9080:9080 -p 9443:9443 orion-talk-image
+    docker run -d --name orion-talk-service -p 9081:9081 -p 9444:9444 orion-talk-image
 
-### Orion Talk dev mode
+### Development mode
 
 During development, you can use Liberty's development mode (dev mode) to code while observing and testing your changes on the fly.
 
