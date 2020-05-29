@@ -16,6 +16,7 @@
  */
 package orion.talk.service;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -29,6 +30,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
 import orion.talk.data.DAOChannel;
 import orion.talk.data.DAOTextMessage;
 import orion.talk.model.Channel;
@@ -40,8 +43,25 @@ public class ServiceController {
 
     @Inject
     private DAOTextMessage daoTextMessage;
+
     @Inject
     private DAOChannel daoChannel;
+
+    // The JWT of the current caller. Since this is a request scoped resource, the
+    // JWT will be injected for each JAX-RS request. The injection is performed by
+    // the mpJwt-1.0 feature.
+    @Inject
+    private JsonWebToken jwt;
+
+    @POST
+    @Path("/jwt")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    @RolesAllowed({ "users" })
+    public void testJwt() {
+        System.out.println("jwt " + this.jwt.getClaim("upn"));
+        System.out.println("jwt " + this.jwt.getClaim("pass"));
+    }
 
     /**
      * Creates a new Channel

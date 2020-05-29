@@ -51,10 +51,20 @@
       <type>esa</type>
     </dependency>
     <dependency>
+      <groupId>io.openliberty.features</groupId>
+      <artifactId>mpJwt-1.1</artifactId>
+      <type>esa</type>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.12</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.13.1</version>
     </dependency>
   </dependencies>
   <build>
