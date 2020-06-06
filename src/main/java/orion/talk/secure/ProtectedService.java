@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package orion.talk.service;
+package orion.talk.secure;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -37,9 +36,9 @@ import orion.talk.data.DAOTextMessage;
 import orion.talk.model.Channel;
 import orion.talk.model.TextMessage;
 
+@Path("/api/v1/")
 @RequestScoped
-@Path("/api/v1.0/")
-public class ServiceController {
+public class ProtectedService {
 
     @Inject
     private DAOTextMessage daoTextMessage;
@@ -53,16 +52,6 @@ public class ServiceController {
     @Inject
     private JsonWebToken jwt;
 
-    @POST
-    @Path("/jwt")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    @RolesAllowed({ "users" })
-    public void testJwt() {
-        System.out.println("jwt " + this.jwt.getClaim("upn"));
-        System.out.println("jwt " + this.jwt.getClaim("pass"));
-    }
-
     /**
      * Creates a new Channel
      * 
@@ -74,15 +63,17 @@ public class ServiceController {
     @Transactional
     public Channel createChannel() {
         final Channel channel = new Channel();
+        System.out.println(channel.getToken());
         return daoChannel.create(channel);
     }
 
     /**
-     * Creates a text message in a Channel asynchronously
+     * Sends a text message to a Channel asynchronously
      * 
      * @param token   The token of a channel
      * @param message The message
-     * @return Returns a TextMessage object
+     * 
+     * @return A TextMessage object
      */
     @POST
     @Path("/send")
@@ -93,6 +84,7 @@ public class ServiceController {
             @FormParam("message") final String message) {
 
         TextMessage textMessage = new TextMessage();
+        System.out.println(message);
         try {
             Channel channel = daoChannel.find("token", token);
 
@@ -129,5 +121,4 @@ public class ServiceController {
         }
         return channel;
     }
-
 }

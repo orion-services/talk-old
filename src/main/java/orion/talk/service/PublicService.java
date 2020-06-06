@@ -14,31 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package orion.talk.secure;
+package orion.talk.service;
 
-import org.eclipse.microprofile.jwt.Claim;
-import org.eclipse.microprofile.jwt.ClaimValue;
-
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-/**
- *
- */
-@Path("/protected")
+import orion.talk.data.DAOChannel;
+
 @RequestScoped
-public class ProtectedController {
+@Path("/api/v1/")
+public class PublicService {
 
     @Inject
-    @Claim("custom-value")
-    private ClaimValue<String> custom;
+    private DAOChannel daoChannel;
 
-    @GET
-    @RolesAllowed("protected")
-    public String getJWTBasedValue() {
-        return "Protected Resource; Custom value : " + custom.getValue();
-    }
 }

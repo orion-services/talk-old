@@ -16,15 +16,32 @@
  */
 package orion.talk;
 
-import org.eclipse.microprofile.auth.LoginConfig;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.security.DeclareRoles;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
+import org.eclipse.microprofile.auth.LoginConfig;
+
+import orion.talk.secure.ProtectedService;
+import orion.talk.service.PublicService;
 
 @ApplicationPath("/talk")
 @LoginConfig(authMethod = "MP-JWT", realmName = "jwt-jaspi")
 @DeclareRoles({ "protected" })
-public class OriontTalkRestApplication extends Application {
+public class OriontTalkService extends Application {
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        final Set<Class<?>> resources = new HashSet<Class<?>>();
+
+        resources.add(PublicService.class);
+        resources.add(ProtectedService.class);
+        resources.add(CORSFilter.class);
+
+        return resources;
+    }
+
 }
