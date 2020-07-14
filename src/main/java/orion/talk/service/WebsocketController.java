@@ -32,6 +32,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import orion.talk.data.DAOChannel;
 import orion.talk.data.DAOTextMessage;
@@ -48,16 +50,21 @@ import orion.talk.model.TextMessage;
 @ServerEndpoint(value = "/talkws/{token}")
 public class WebsocketController {
 
-    // private Tracer tracer;
-
     @Inject
     private DAOTextMessage daoTextMessage;
     @Inject
     private DAOChannel daoTalk;
 
+    // Stores all sessions
     private final Map<String, List<Session>> sessions = Collections
             .synchronizedMap(new HashMap<String, List<Session>>());
 
+    /**
+     * Creates the web socket session to a channel
+     * 
+     * @param session The web socket session
+     * @param token   A token to identify the channel
+     */
     @OnOpen
     public void onOpen(final Session session, @PathParam("token") final String token) {
         System.out.println("onOpen: " + token);
@@ -78,31 +85,44 @@ public class WebsocketController {
         this.sendToAll(token, token);
     }
 
+    /**
+     * Receives a message to a channel
+     * 
+     * @param message A message in string format
+     * @param token   A token to identify the channel
+     */
     @OnMessage
     public void onMessage(final String message, @PathParam("token") final String token) {
-        // Span span = this.tracer.buildSpan("talk-onMessage").start();
         System.out.println("onMessage: " + message);
-        final Channel channel = daoTalk.find("token", token);
-        if (channel != null) {
-            final TextMessage textMessage = new TextMessage();
-            textMessage.setChannel(channel);
-            textMessage.setMessage(message);
-            this.daoTextMessage.create(textMessage);
+        if (!message.equals("")) {
+            final Channel channel = daoTalk.find("token", token);
+            if (channel != null) {
+                final TextMessage textMessage = new TextMessage();
+                textMessage.setChannel(channel);
+                textMessage.setMessage(message);
+                this.daoTextMessage.create(textMessage);
+            }
+            this.sendToAll(message, token);
         }
-        this.sendToAll(message, token);
     }
 
+    /**
+     * Closes the web socket session of a channel
+     * 
+     * @param session The web socket session
+     * @param token   A token to identify the channel
+     */
     @OnClose
-    public void onClose(final Session session, @PathParam("talkHash") final String talkHash) {
+    public void onClose(final Session session, @PathParam("talkHash") final String token) {
         System.out.println("onClose");
-        final List<Session> talkSessions = this.sessions.get(talkHash);
+        final List<Session> talkSessions = this.sessions.get(token);
         if (talkSessions != null) {
             talkSessions.remove(session);
         }
     }
 
     /**
-     * Sends a message to all connections of a channel identifying by a token
+     * Sends a message to all connections of a channel
      * 
      * @param message The text message
      * @param token   The token of a channel

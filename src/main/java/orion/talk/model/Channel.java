@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,6 +45,7 @@ public class Channel {
     /** primary key */
     @Id
     @GeneratedValue
+    @JsonbTransient
     private long id;
 
     /** indicates when the channel was created */

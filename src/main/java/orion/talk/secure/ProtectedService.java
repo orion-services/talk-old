@@ -27,7 +27,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -58,13 +60,17 @@ public class ProtectedService {
      * @return A Channel object
      */
     @GET
-    @Path("/create")
+    @Path("/createChannel")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Channel createChannel() {
-        final Channel channel = new Channel();
-        System.out.println(channel.getToken());
-        return daoChannel.create(channel);
+        String errorMessage = null;
+        try {
+            return daoChannel.create(new Channel());
+        } catch (Exception e) {
+            errorMessage = "Was not possible to create a channel";
+            throw new WebApplicationException(errorMessage, Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -80,24 +86,33 @@ public class ProtectedService {
     @Consumes("application/x-www-form-urlencoded")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public TextMessage createTextMessage(@FormParam("token") final String token,
-            @FormParam("message") final String message) {
+    public TextMessage sendTextMessage(@FormParam("token") final String token,
+            @FormParam("message") final String message) throws WebApplicationException {
+
+        String errorMessage = null;
 
         TextMessage textMessage = new TextMessage();
-        System.out.println(message);
-        try {
-            Channel channel = daoChannel.find("token", token);
 
-            textMessage = new TextMessage();
-            textMessage.setMessage(message);
-            textMessage.setChannel(channel);
-            daoTextMessage.create(textMessage);
+        if (!message.equals("")) {
+            try {
+                Channel channel = daoChannel.find("token", token);
 
-        } catch (NoResultException e) {
-            System.out.println(e);
+                textMessage = new TextMessage();
+                textMessage.setMessage(message);
+                textMessage.setChannel(channel);
+                daoTextMessage.create(textMessage);
+
+            } catch (NoResultException e) {
+                errorMessage = "Channel not found";
+                throw new WebApplicationException(errorMessage, Response.Status.NOT_FOUND);
+            }
+        } else {
+            errorMessage = "The message is empty";
+            throw new WebApplicationException(errorMessage, Response.Status.NOT_FOUND);
         }
 
         return textMessage;
+
     }
 
     /**
@@ -110,14 +125,12 @@ public class ProtectedService {
     @Path("/load/{token}")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Channel loadChannel(@PathParam("token") final String token) {
+    public Channel loadChannel(@PathParam("token") final String token) throws WebApplicationException {
         Channel channel = null;
         try {
             channel = daoChannel.find("token", token);
-        } catch (NoResultException e) {
-            System.out.println("Channel object not found with token: " + token);
         } catch (Exception e) {
-            System.out.println(e);
+            throw new WebApplicationException("Channel not found", Response.Status.NOT_FOUND);
         }
         return channel;
     }
