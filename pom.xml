@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.ifrs.orion.talk</groupId>
@@ -19,7 +19,7 @@
   </dependencyManagement>
 
   <properties>
-    <openliberty.maven.version>3.1</openliberty.maven.version>
+    <openliberty.maven.version>3.3-M2</openliberty.maven.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -61,10 +61,37 @@
       <version>1.18.12</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.13.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>5.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.4.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>1.14.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>1.14.3</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -82,29 +109,20 @@
             <groupId>io.openliberty.tools</groupId>
             <artifactId>liberty-maven-plugin</artifactId>
             <version>${openliberty.maven.version}</version>
+          </plugin>
+          <!-- Plugin to run integration tests -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>3.0.0-M5</version>
             <executions>
               <execution>
-                <id>package-server</id>
-                <phase>package</phase>
                 <goals>
-                  <goal>create</goal>
-                  <goal>install-feature</goal>
-                  <goal>deploy</goal>
-                  <goal>package</goal>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
                 </goals>
-                <configuration>
-                  <outputDirectory>target/wlp-package</outputDirectory>
-                </configuration>
               </execution>
             </executions>
-            <configuration>
-              <include>runnable</include>
-              <serverName>${final.name}</serverName>
-              <bootstrapProperties>
-                <project.name>${final.name}</project.name>
-                <jwt.issuer>https://server.example.com</jwt.issuer>
-              </bootstrapProperties>
-            </configuration>
           </plugin>
         </plugins>
       </build>

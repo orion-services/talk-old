@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <server description="${project.name}">
 
     <featureManager>
@@ -42,7 +42,7 @@
     <dataSource jndiName="jdbc/OrionTalkServiceDS">
         <jdbcDriver libraryRef="MySQLLib" />
         <!-- In development mode, use: serverName="localhost" portNumber="3307"  -->
-        <properties databaseName="orion-talk-service" serverName="localhost" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
+        <properties databaseName="orion-talk-service" serverName="db" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
     </dataSource>
 
 </server>
