@@ -55,25 +55,6 @@ public class ProtectedService {
     private JsonWebToken jwt;
 
     /**
-     * Creates a new Channel
-     * 
-     * @return A Channel object
-     */
-    @GET
-    @Path("/createChannel")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Channel createChannel() {
-        String errorMessage = null;
-        try {
-            return daoChannel.create(new Channel());
-        } catch (Exception e) {
-            errorMessage = "Was not possible to create a channel";
-            throw new WebApplicationException(errorMessage, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
      * Sends a text message to a Channel asynchronously
      * 
      * @param token   The token of a channel

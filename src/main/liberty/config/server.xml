@@ -42,7 +42,8 @@
     <dataSource jndiName="jdbc/OrionTalkServiceDS">
         <jdbcDriver libraryRef="MySQLLib" />
         <!-- In development mode, use: serverName="localhost" portNumber="3307"  -->
-        <properties databaseName="orion-talk-service" serverName="db" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
+        <!-- In production, use: serverName="db" portNumber="3306"  -->
+        <properties databaseName="orion-talk-service" serverName="localhost" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
     </dataSource>
 
 </server>

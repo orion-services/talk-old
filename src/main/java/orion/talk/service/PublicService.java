@@ -18,9 +18,16 @@ package orion.talk.service;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import orion.talk.data.DAOChannel;
+import orion.talk.model.Channel;
 
 @RequestScoped
 @Path("/api/v1/")
@@ -28,5 +35,24 @@ public class PublicService {
 
     @Inject
     private DAOChannel daoChannel;
+
+    /**
+     * Creates a new Channel
+     * 
+     * @return A Channel object
+     */
+    @GET
+    @Path("/createChannel")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Channel createChannel() {
+        String errorMessage = null;
+        try {
+            return daoChannel.create(new Channel());
+        } catch (Exception e) {
+            errorMessage = "Was not possible to create a channel";
+            throw new WebApplicationException(errorMessage, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
