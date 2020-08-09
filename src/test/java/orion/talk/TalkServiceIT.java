@@ -20,40 +20,49 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+/**
+ * Integration test os Orin Talk
+ */
 @ExtendWith({ DockerCompose.class })
 public class TalkServiceIT {
 
+    private static String API = "/orion-talk-service/talk/api/v1/";
+
+    private String host;
+    private Integer port;
+
+    private CloseableHttpClient client;
+
+    public TalkServiceIT(){
+        this.client = HttpClients.createDefault();
+        host = DockerCompose.talk.getContainerIpAddress();
+        port = DockerCompose.talk.getFirstMappedPort();
+    }
+
     @Test
     public void foo() {
-
-        String host = DockerCompose.talk.getContainerIpAddress();
-        Integer port = DockerCompose.talk.getFirstMappedPort();
-
-        System.out.println(">>>>>>>>>>>>>>>>>>" + host);
-        System.out.println(">>>>>>>>>>>>>>>>>>" + port);
-
-        CloseableHttpResponse response;
         try {
-
-            String url = "http://"+ host + ":" + port + "/orion-talk-service/talk/api/v1/createChannel";
-
-            System.out.println(">>>>>>>>>>>>>>>>>>" + url);
-
-            CloseableHttpClient client = HttpClients.createDefault();
+            // Mounting URL
+            String url = "http://"+ host + ":" + port + API + "createChannel" ;
+            // Creatring a get
             HttpGet get = new HttpGet(url);
-            response = client.execute(get);
-            System.out.println(response.toString());
+            // execute and getting the response
+            HttpResponse response = this.client.execute(get);
+            
+            // Get response body
+            //HttpEntity entity = response.getEntity();
+            //String content = EntityUtils.toString(entity);
+            //System.out.println(">>>>>>>>>>>>" + content);
+
             assertEquals(response.getStatusLine().getStatusCode(), 200);
-            client.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

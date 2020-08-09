@@ -25,8 +25,12 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 
+/**
+ * This class creates the containers to run integration tests for Orion Talk Service
+ */
 public class DockerCompose implements BeforeAllCallback, AfterAllCallback {
     
+    // Configure the a talk service container from Dockerfile
     @Container
     public static ApplicationContainer talk = new ApplicationContainer()
         .withAppContextRoot("/orion-talk-service/talk")
@@ -46,7 +50,7 @@ public class DockerCompose implements BeforeAllCallback, AfterAllCallback {
         talk.withNetwork(network);
         talk.withNetworkAliases("talk");
 
-        // create a MySQL container from latest image
+        // create a MySQL container to work with talk service
         mysql = new MySQLContainer<>("mysql:latest");
         mysql.withDatabaseName("orion-talk-service");
         mysql.withUsername("orion-talk-service");
