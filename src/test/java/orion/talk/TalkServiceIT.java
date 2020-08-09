@@ -16,41 +16,46 @@
  */
 package orion.talk;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.Test;
-import org.microshed.testing.SharedContainerConfig;
-import org.microshed.testing.jaxrs.RESTClient;
-import org.microshed.testing.jupiter.MicroShedTest;
-import org.testcontainers.containers.MySQLContainer;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import orion.talk.model.Channel;
-import orion.talk.service.PublicService;
-
-@MicroShedTest
-@SharedContainerConfig(AppContainerConfig.class)
+@ExtendWith({ DockerCompose.class })
 public class TalkServiceIT {
-
-    @RESTClient
-    public static PublicService client;
-
-    @Test
-    public void createChannelTest() {
-        try (MySQLContainer<?> mysql = new MySQLContainer<>("mysql:latest").withDatabaseName("orion-talk-service")
-                .withUsername("orion-talk-service").withPassword("orion-talk-service")
-                .withNetworkAliases("talk_default").withExposedPorts(3307)) {
-            mysql.start();
-
-            Channel channel = client.createChannel();
-            assertNotNull(channel);
-        }
-
-    }
 
     @Test
     public void foo() {
-        assertTrue(true);
+
+        String host = DockerCompose.talk.getContainerIpAddress();
+        Integer port = DockerCompose.talk.getFirstMappedPort();
+
+        System.out.println(">>>>>>>>>>>>>>>>>>" + host);
+        System.out.println(">>>>>>>>>>>>>>>>>>" + port);
+
+        CloseableHttpResponse response;
+        try {
+
+            String url = "http://"+ host + ":" + port + "/orion-talk-service/talk/api/v1/createChannel";
+
+            System.out.println(">>>>>>>>>>>>>>>>>>" + url);
+
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpGet get = new HttpGet(url);
+            response = client.execute(get);
+            System.out.println(response.toString());
+            assertEquals(response.getStatusLine().getStatusCode(), 200);
+            client.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

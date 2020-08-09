@@ -41,9 +41,9 @@
     <!-- Declare the Worklight Server project database -->
     <dataSource jndiName="jdbc/OrionTalkServiceDS">
         <jdbcDriver libraryRef="MySQLLib" />
-        <!-- In development mode, use: serverName="localhost" portNumber="3307"  -->
-        <!-- In production, use: serverName="db" portNumber="3306"  -->
-        <properties databaseName="orion-talk-service" serverName="localhost" portNumber="3307" user="orion-talk-service" password="orion-talk-service" />
+        <!-- Development mode: serverName="localhost" portNumber="3307"  -->
+        <!-- Continuous integration and production: serverName="db" portNumber="3306"  -->
+        <properties serverName="db" portNumber="3306" databaseName="orion-talk-service" user="orion-talk-service" password="orion-talk-service" />
     </dataSource>
 
 </server>
