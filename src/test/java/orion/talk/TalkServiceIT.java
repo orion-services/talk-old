@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Integration test os Orin Talk
+ * Integration test of Orin Talk
  */
 @ExtendWith({ DockerCompose.class })
 public class TalkServiceIT {
@@ -40,7 +40,7 @@ public class TalkServiceIT {
 
     private CloseableHttpClient client;
 
-    public TalkServiceIT(){
+    public TalkServiceIT() {
         this.client = HttpClients.createDefault();
         host = DockerCompose.talk.getContainerIpAddress();
         port = DockerCompose.talk.getFirstMappedPort();
@@ -50,16 +50,18 @@ public class TalkServiceIT {
     public void foo() {
         try {
             // Mounting URL
-            String url = "http://"+ host + ":" + port + API + "createChannel" ;
-            // Creatring a get
+            String url = "http://" + host + ":" + port + API + "createChannel";
+
+            // Creating a get
             HttpGet get = new HttpGet(url);
             // execute and getting the response
             HttpResponse response = this.client.execute(get);
-            
+
+            // TODO remove this comment
             // Get response body
-            //HttpEntity entity = response.getEntity();
-            //String content = EntityUtils.toString(entity);
-            //System.out.println(">>>>>>>>>>>>" + content);
+            // HttpEntity entity = response.getEntity();
+            // String content = EntityUtils.toString(entity);
+            // System.out.println(">>>>>>>>>>>>" + content);
 
             assertEquals(response.getStatusLine().getStatusCode(), 200);
         } catch (IOException e) {
