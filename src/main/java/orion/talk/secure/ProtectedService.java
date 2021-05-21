@@ -31,8 +31,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
-
 import orion.talk.data.DAOChannel;
 import orion.talk.data.DAOTextMessage;
 import orion.talk.model.Channel;
@@ -47,12 +45,6 @@ public class ProtectedService {
 
     @Inject
     private DAOChannel daoChannel;
-
-    // The JWT of the current caller. Since this is a request scoped resource, the
-    // JWT will be injected for each JAX-RS request. The injection is performed by
-    // the mpJwt-1.0 feature.
-    @Inject
-    private JsonWebToken jwt;
 
     /**
      * Sends a text message to a Channel asynchronously

@@ -32,8 +32,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
 import orion.talk.data.DAOChannel;
 import orion.talk.data.DAOTextMessage;

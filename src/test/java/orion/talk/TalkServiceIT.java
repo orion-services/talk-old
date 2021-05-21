@@ -57,7 +57,6 @@ public class TalkServiceIT {
             // execute and getting the response
             HttpResponse response = this.client.execute(get);
 
-            // TODO remove this comment
             // Get response body
             // HttpEntity entity = response.getEntity();
             // String content = EntityUtils.toString(entity);

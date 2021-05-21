@@ -33,5 +33,5 @@ services:
             - "phpMyAdmin"
         container_name: talk-service
         ports:
-            - 9080:9080
-            - 9443:9443
+            - 9081:9081
+            - 9444:9444
