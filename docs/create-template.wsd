@@ -1,0 +1,46 @@
+@startuml
+autonumber
+title "Create template case"
+
+actor "Admin user" as client
+box "Protected stack" #LightCyan
+participant Communication
+participant User
+end box
+database DB
+
+
+client -> Communication: create template
+activate Communication
+Communication -> User: validate user with jwt
+activate User
+alt Authorized
+  User --> Communication: Authorized
+  deactivate User
+  Communication -> Communication: verify template request
+  alt template request valid
+    Communication -> DB: persist template data
+    activate DB
+    DB --> Communication: persisted template data
+    deactivate DB
+    Communication --> client: persisted template data
+  else template request invalid
+    Communication --> client: template request invalid
+  end
+  deactivate Communication
+else Expired Token
+  activate User
+  User --> Communication: Not authorized \n[token expired]
+  deactivate User
+  activate Communication
+  note right of Communication
+    Refresh token diagram
+    in  **User** service docs
+  end note
+  Communication --> client: Not authorized \n[token expired]
+else User not Registered
+  User --> Communication: User not registered
+  Communication --> client: Not authorized \n[user not registered]
+  deactivate Communication
+end
+@enduml
