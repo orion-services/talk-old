@@ -1,0 +1,65 @@
+@startuml
+autonumber
+title "Email service case"
+
+box "Protected stack" #LightCyan
+
+actor "Internal service" as client
+participant Communication
+participant User
+end box
+database DB
+participant External_Email_Service
+
+
+client -> Communication: send email
+activate Communication
+Communication -> User: validate user with jwt
+activate User
+alt Authorized
+  User --> Communication: Authorized
+  deactivate User
+  alt Get User Email
+    Communication -> User: get emails from users
+    activate User
+    User --> Communication: emails list
+  else Email Not Found
+    alt flag email able to send
+      User --> Communication: emails not found
+      deactivate User
+    else flag email not able to send
+      Communication --> client: email not found
+    end
+  end
+  alt Use Template
+       Communication -> DB : get template
+      activate DB
+      DB --> Communication : template 
+      deactivate DB
+      Communication -> Communication : process template
+    alt Template Successful
+      Communication -> External_Email_Service : send email
+      Communication <-- client : send email successful
+    else Template Error
+      Communication --> client : template with error
+    end
+  end
+  Communication -> External_Email_Service : send email
+  Communication --> client : send email successful
+  deactivate Communication
+else Expired Token
+  activate User
+  User --> Communication : Not authorized \n[token expired]
+  deactivate User
+  activate Communication
+  note right of Communication
+    Refresh token diagram
+    in  **User** service docs
+  end note
+  Communication --> client : Not authorized \n[token expired]
+else Service not Registered
+  User --> Communication : Service not registered
+  Communication --> client : Not authorized \n[service not registered]
+  deactivate Communication
+end
+@enduml
