@@ -24,10 +24,10 @@ alt Authorized
     activate User
     User --> Communication: emails list
   else Email Not Found
-    alt flag email able to send
-      User --> Communication: emails not found
+    User --> Communication: emails not found
+    alt ignore e-mail with errors
       deactivate User
-    else flag email not able to send
+    else send to all strictly
       Communication --> client: email not found
     end
   end
