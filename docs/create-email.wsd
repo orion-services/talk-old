@@ -25,11 +25,10 @@ alt Authorized
     User --> Communication: emails list
   else Email Not Found
     User --> Communication: emails not found
-    alt ignore e-mail with errors
+    alt send to all strictly
       deactivate User
-    else send to all strictly
+
       Communication --> client: email not found
-    end
   end
   alt Use Template
        Communication -> DB : get template
