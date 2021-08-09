@@ -1,6 +1,6 @@
 @startuml
 autonumber
-title "Email service case"
+title "Send e-mail case"
 
 box "Protected stack" #LightCyan
 
@@ -29,23 +29,24 @@ alt Authorized
       deactivate User
 
       Communication --> client: email not found
-  end
-  alt Use Template
-       Communication -> DB : get template
+    end
+    alt Use Template
+      Communication -> DB : get template
       activate DB
-      DB --> Communication : template 
+      DB --> Communication : template
       deactivate DB
       Communication -> Communication : process template
-    alt Template Successful
-      Communication -> External_Email_Service : send email
-      Communication <-- client : send email successful
-    else Template Error
-      Communication --> client : template with error
+      alt Template Successful
+        Communication -> External_Email_Service : send email
+        Communication <-- client : send email successful
+      else Template Error
+        Communication --> client : template with error
+      end
     end
+    Communication -> External_Email_Service : send email
+    Communication --> client : send email successful
+    deactivate Communication
   end
-  Communication -> External_Email_Service : send email
-  Communication --> client : send email successful
-  deactivate Communication
 else Expired Token
   activate User
   User --> Communication : Not authorized \n[token expired]
