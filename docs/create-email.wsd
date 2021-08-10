@@ -14,39 +14,38 @@ participant External_Email_Service
 
 client -> Communication: send email
 activate Communication
-Communication -> User: validate user with jwt
+Communication -> User: validate internal service
 activate User
 alt Authorized
   User --> Communication: Authorized
   deactivate User
-  alt Get User Email
-    Communication -> User: get emails from users
-    activate User
-    User --> Communication: emails list
-  else Email Not Found
+  Communication -> User: get emails from users
+  activate User
+  User --> Communication: emails list
+  alt Email Not Found
     User --> Communication: emails not found
     alt send to all strictly
       deactivate User
-
       Communication --> client: email not found
     end
-    alt Use Template
-      Communication -> DB : get template
-      activate DB
-      DB --> Communication : template
-      deactivate DB
+  end
+  alt Use Template
+    Communication -> DB : get template
+    activate DB
+    DB --> Communication : template
+    deactivate DB
+    alt template found
       Communication -> Communication : process template
-      alt Template Successful
-        Communication -> External_Email_Service : send email
-        Communication <-- client : send email successful
-      else Template Error
+      alt Template Error
         Communication --> client : template with error
       end
+    else Template Not Found
+      Communication --> client : template not found
     end
-    Communication -> External_Email_Service : send email
-    Communication --> client : send email successful
-    deactivate Communication
   end
+  Communication -> External_Email_Service : send email
+  Communication --> client : send email successful
+  deactivate Communication
 else Expired Token
   activate User
   User --> Communication : Not authorized \n[token expired]
