@@ -1,0 +1,13 @@
+greeting:
+  message: "hello"
+quarkus:
+  datasource:
+    db-kind: mysql
+    username: root
+    password: 123
+    jdbc:
+      url: jdbc:mysql://localhost:3307/hibernate_db
+  # drop and create the database at startup (use `update` to only update the schema)
+  hibernate-orm:
+    database:
+      generation: drop-and-create
