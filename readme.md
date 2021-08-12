@@ -1,37 +1,54 @@
-# Orion Talk Service
+# orion-communication Project
 
-Orion Talk Service is a simple text message microservice that implements both an Web Service and Web Socket APIs.
+This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-## Run with docker compose
+If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
-The easer way to install and execute the Orion Talk Service is to use docker-composer. Once docker compose is installed, you can run the bellow command in the:
+## Running the application in dev mode
 
-    docker-compose up -d
+You can run your application in dev mode that enables live coding using:
+```shell script
+./mvnw compile quarkus:dev
+```
 
-Note: Default database root and password is: orion-talk-service
+> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
-## Build a docker image
+## Packaging and running the application
 
-To create a Docker image for Orion Talk Service:
+The application can be packaged using:
+```shell script
+./mvnw package
+```
+It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
+Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
-    mvn clear package
+If you want to build an _über-jar_, execute the following command:
+```shell script
+./mvnw package -Dquarkus.package.type=uber-jar
+```
 
-    docker build -t orion-talk-image .
+The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
 
-    docker run -d --name orion-talk-service -p 9081:9081 -p 9444:9444 orion-talk-image
+## Creating a native executable
 
-### Development mode
+You can create a native executable using: 
+```shell script
+./mvnw package -Pnative
+```
 
-During development, you can use Liberty's development mode (dev mode) to code while observing and testing your changes on the fly.
+Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+```shell script
+./mvnw package -Pnative -Dquarkus.native.container-build=true
+```
 
-    mvn clear package
-    mvn liberty:dev
-<!--
-### JWT Auth
+You can then execute your native executable with: `./target/orion-communication-1.0.0-SNAPSHOT-runner`
 
-Have a look at the **TestSecureController** class (main application) which calls the protected endpoint on the secondary application.
-The **ProtectedController** contains the protected endpoint since it contains the _@RolesAllowed_ annotation on the JAX-RS endpoint method.
+If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
 
-The _TestSecureController_ code creates a JWT based on the private key found within the resource directory.
-However, any method to send a REST request with an appropriate header will work of course. Please feel free to change this code to your needs.
--->
+## Provided Code
+
+### RESTEasy JAX-RS
+
+Easily start your RESTful Web Services
+
+[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
