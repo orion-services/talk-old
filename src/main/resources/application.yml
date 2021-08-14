@@ -7,6 +7,15 @@ quarkus:
     password: 123
     jdbc:
       url: jdbc:mysql://localhost:3307/hibernate_db
+  mailer:
+      auth-methods: DIGEST-MD5 CRAM-SHA256 CRAM-SHA1 CRAM-MD5 PLAIN LOGIN
+      from: ''
+      host: smtp.gmail.com
+      password: ''
+      port: 465
+      ssl: true
+      username:  ''
+      mock: false 
   # drop and create the database at startup (use `update` to only update the schema)
   hibernate-orm:
     database:
