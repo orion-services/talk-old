@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import dev.orion.api.dto.MailRequestDTO;
+import dev.orion.services.MailService;
 import dev.orion.services.UserService;
 @Path("/mail")                                                          
 public class MailResource {
@@ -22,6 +23,9 @@ public class MailResource {
     @Inject
     UserService userService;
 
+    @Inject
+    MailService mailService;
+
     @GET                                                                
     @Blocking
     @Consumes(MediaType.APPLICATION_JSON)                                                           
@@ -30,22 +34,32 @@ public class MailResource {
 
         var usersIds = mailRequestDTO.usersIds;
 
+        var sendToAll = mailRequestDTO.sendToAll;
+
         var users = userService.getUsers(usersIds);
 
-        var emails = userService.getEmails(users);
+        var isSendToAll = mailService.isSendToAllStrictly(users, sendToAll);
 
-        emails.forEach(email -> {
-        
-        var email1 = Mail.withText(email,
-        "Ahoy from Quarkus",
-        "A simple email sent from a Quarkus application.");
+        if(isSendToAll.equals(Boolean.TRUE)){
 
-            mailer.send(
-                    email1
-            );
-        });
-        
-        return Response.ok().build();
+            var emails = userService.getEmails(users);
+
+            emails.forEach(email -> {
+            
+                var email1 = Mail.withText(email,
+                "Ahoy from Quarkus",
+                "A simple email sent from a Quarkus application.");
+
+                mailer.send(
+                        email1
+                );
+            });
+            
+            return Response.ok("emails sended").build();
+        }
+
+        return Response.status(502).build();        
+
     }
 
 }

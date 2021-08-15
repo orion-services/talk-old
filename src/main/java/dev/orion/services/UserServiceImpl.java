@@ -17,9 +17,14 @@ public class UserServiceImpl implements UserService {
 
         Set<String> emails = new HashSet<>();
 
-        users.forEach(user ->{
-            emails.add(user.email);
+        users.forEach(user -> {
+            if(user != null){
+                
+                emails.add(user.email);
+
+            }
         });
+
      
         return emails;
     }
@@ -35,15 +40,25 @@ public class UserServiceImpl implements UserService {
 
         ArrayList<UserClientDTO> users = new ArrayList<>();
 
-        usersIDs.forEach(userId -> {
-            var userDTO = new UserClientDTO();
-            userDTO.name = "teste";
-            userDTO.cpf = "00000000";
-            userDTO.email = "example@example.com";
-            userDTO.uuid = userId;
+        List<String> userIDsList = new ArrayList<>(usersIDs);
 
-            users.add(userDTO);
-        });
+        //mock valids user and a null user
+        
+        var userDTOOne = new UserClientDTO();
+        userDTOOne.name = "teste";
+        userDTOOne.cpf = "00000000";
+        userDTOOne.email = "example1@example.com";
+        userDTOOne.uuid = userIDsList.get(0); 
+
+        var userDTOTwo = new UserClientDTO();
+        userDTOTwo.name = "teste";
+        userDTOTwo.cpf = "00000000";
+        userDTOTwo.email = "example2@example.com";
+        userDTOTwo.uuid = userIDsList.get(1); 
+
+        users.add(userDTOOne);
+        users.add(userDTOTwo);
+        users.add(null);
 
         return users;
 

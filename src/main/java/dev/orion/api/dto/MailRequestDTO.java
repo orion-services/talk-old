@@ -12,5 +12,7 @@ public class MailRequestDTO {
   @NotNull
   public Set<String> usersIds = new HashSet<>();
 
+  public Boolean sendToAll;
+
 }
 
