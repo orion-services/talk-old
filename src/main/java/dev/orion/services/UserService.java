@@ -1,28 +1,13 @@
 package dev.orion.services;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class UserService {
+import dev.orion.api.dto.UserClientDTO;
 
-    public Set<String> getEmails(Set<String> userID){
+public interface UserService {
 
-        Set<String> emails = new HashSet<>();
-
-        String[][] users;
-
-        //integracao fake com servico de usuario
-
-        UserServiceFake userServiceFake = new UserServiceFake();
-
-        userServiceFake.returnUsers(userID);
-
-        users = userServiceFake.returnUsers(userID);
-
-        for(int i=0;i<users.length;i++){
-           emails.add(users[i][2]);
-        }
-    
-        return emails;
-    }
+    public Set<String> getEmails(List<UserClientDTO> users);
+    public List<UserClientDTO> getUsers(Set<String> userID);
+        
 }
