@@ -1,23 +1,27 @@
 package dev.orion.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import dev.orion.api.dto.UserClientDTO;
+import dev.orion.services.interfaces.UserService;
 
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
 
     @Override
-    public Set<String> getEmails(List<UserClientDTO> users) {
+    public Set<String> getEmails(Map<String,UserClientDTO> users) {
 
         Set<String> emails = new HashSet<>();
 
-        users.forEach(user -> {
+        users.forEach( (key, user) -> {
+
             if(user != null){
                 
                 emails.add(user.email);
@@ -25,20 +29,20 @@ public class UserServiceImpl implements UserService {
             }
         });
 
-     
         return emails;
     }
     
     @Override
-    public List<UserClientDTO> getUsers(Set<String> usersIDs) {
+    public Map<String,UserClientDTO> getUsers(Set<String> usersIDs) {
 
         return mockUserCreation(usersIDs);
 
     }
 
-    public List<UserClientDTO> mockUserCreation(Set<String> usersIDs){
 
-        ArrayList<UserClientDTO> users = new ArrayList<>();
+    public Map<String,UserClientDTO> mockUserCreation(Set<String> usersIDs){
+
+        Map<String,UserClientDTO> users = new HashMap<>();
 
         List<String> userIDsList = new ArrayList<>(usersIDs);
 
@@ -47,7 +51,7 @@ public class UserServiceImpl implements UserService {
         var userDTOOne = new UserClientDTO();
         userDTOOne.name = "teste";
         userDTOOne.cpf = "00000000";
-        userDTOOne.email = "example1@example.com";
+        userDTOOne.email = "example@example.com";
         userDTOOne.uuid = userIDsList.get(0); 
 
         var userDTOTwo = new UserClientDTO();
@@ -56,9 +60,9 @@ public class UserServiceImpl implements UserService {
         userDTOTwo.email = "example2@example.com";
         userDTOTwo.uuid = userIDsList.get(1); 
 
-        users.add(userDTOOne);
-        users.add(userDTOTwo);
-        users.add(null);
+        users.put( userIDsList.get(0), userDTOOne);
+        users.put( userIDsList.get(1), userDTOTwo);
+        users.put( userIDsList.get(2), null);
 
         return users;
 

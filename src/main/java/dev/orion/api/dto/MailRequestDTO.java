@@ -12,6 +12,8 @@ public class MailRequestDTO {
   @NotNull
   public Set<String> usersIds = new HashSet<>();
 
+  @NotBlank(message = "sendToAll must not be empty")
+  @NotNull
   public Boolean sendToAll;
 
 }
