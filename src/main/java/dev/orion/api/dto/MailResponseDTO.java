@@ -1,6 +1,6 @@
 package dev.orion.api.dto;
 
-public class ResponseDTO {
+public class MailResponseDTO {
 
     public String uuid;
 
