@@ -10,5 +10,6 @@ public interface MailService {
 
     public Boolean containsUserNull(Map<String,UserClientDTO> returnedUsers);
     public Set<ResponseDTO> getResponses(Map<String,UserClientDTO> users);
+    public void sendMails(Set<ResponseDTO> responses);
 
 }

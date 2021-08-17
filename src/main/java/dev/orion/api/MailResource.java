@@ -1,7 +1,5 @@
 package dev.orion.api;
 
-import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
 import io.smallrye.common.annotation.Blocking;
 
 import javax.ws.rs.Produces;
@@ -20,9 +18,6 @@ import dev.orion.services.interfaces.UserService;
 public class MailResource {
 
     @Inject
-    Mailer mailer;
-
-    @Inject
     UserService userService;
 
     @Inject
@@ -34,11 +29,9 @@ public class MailResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendEmail(MailRequestDTO mailRequestDTO) {
 
-        var usersIds = mailRequestDTO.usersIds;
-
         var sendToAll = mailRequestDTO.sendToAll;
 
-        var users = userService.getUsers(usersIds);
+        var users = userService.getUsers(mailRequestDTO.usersIds);
 
         var containsUserNull = mailService.containsUserNull(users);
 
@@ -46,20 +39,11 @@ public class MailResource {
 
         if (containsUserNull.equals(Boolean.TRUE) && sendToAll.equals(Boolean.FALSE)) {
 
-            return Response.status(502).build();
+            return Response.notModified("tag").build();
 
         } else {
 
-            responses.forEach(response ->{
-                if(response.email != null){
-                    var email1 = Mail.withText(response.email, "Ahoy from Quarkus",
-                    "A simple email sent from a Quarkus application.");
-
-                    mailer.send(email1);
-                    response.isSended = true;
-                }    
-            });
-
+            mailService.sendMails(responses);
             return Response.ok(responses).build();
         }
 
