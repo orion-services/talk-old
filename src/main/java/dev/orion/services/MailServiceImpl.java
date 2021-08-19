@@ -60,30 +60,24 @@ public class MailServiceImpl implements MailService {
 
         var returnedTemplate = getTemplete(templateID);
 
-        if (returnedTemplate != null) {
+        responses.forEach(response -> {
+            if (response.email != null) {
 
-            responses.forEach(response -> {
+                Mail email;
 
-                if (response.email != null) {
-                    var email1 = Mail.withText(response.email, returnedTemplate.title, returnedTemplate.msg);
+                email = Mail.withText(response.email, "Hello from Orion", "You are invited to join the Orion Group");
 
-                    mailer.send(email1);
-                    response.isSended = true;
+                if (returnedTemplate != null) {
+
+                    email = Mail.withText(response.email, returnedTemplate.title, returnedTemplate.msg);
+
                 }
-            });
 
-        } else {
+                mailer.send(email);
+                response.isSended = true;
+            }
 
-            responses.forEach(response -> {
-
-                if (response.email != null) {
-                    var email1 = Mail.withText(response.email, "Ahoy from Quarkus", "default message");
-
-                    mailer.send(email1);
-                    response.isSended = true;
-                }
-            });
-        }
+        });
 
     }
 
