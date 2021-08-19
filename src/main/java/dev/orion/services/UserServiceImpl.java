@@ -16,14 +16,21 @@ import dev.orion.services.interfaces.UserService;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public Set<String> getEmails(Map<String,UserClientDTO> users) {
+    public Boolean validateService(String serviceID) {
+        
+        return mockValidateService(serviceID).equals(false);
+
+    }
+
+    @Override
+    public Set<String> getEmails(Map<String, UserClientDTO> users) {
 
         Set<String> emails = new HashSet<>();
 
-        users.forEach( (key, user) -> {
+        users.forEach((key, user) -> {
 
-            if(user != null){
-                
+            if (user != null) {
+
                 emails.add(user.email);
 
             }
@@ -31,40 +38,45 @@ public class UserServiceImpl implements UserService {
 
         return emails;
     }
-    
+
     @Override
-    public Map<String,UserClientDTO> getUsers(Set<String> usersIDs) {
+    public Map<String, UserClientDTO> getUsers(Set<String> usersIDs) {
 
         return mockUserCreation(usersIDs);
 
     }
 
+    public Map<String, UserClientDTO> mockUserCreation(Set<String> usersIDs) {
 
-    public Map<String,UserClientDTO> mockUserCreation(Set<String> usersIDs){
-
-        Map<String,UserClientDTO> users = new HashMap<>();
+        Map<String, UserClientDTO> users = new HashMap<>();
 
         List<String> userIDsList = new ArrayList<>(usersIDs);
 
-        //mock valids user and a null user
-        
+        // mock valids user and a null user
+
         var userDTOOne = new UserClientDTO();
         userDTOOne.name = "teste";
         userDTOOne.cpf = "00000000";
         userDTOOne.email = "example@example.com";
-        userDTOOne.uuid = userIDsList.get(0); 
+        userDTOOne.uuid = userIDsList.get(0);
 
         var userDTOTwo = new UserClientDTO();
         userDTOTwo.name = "teste";
         userDTOTwo.cpf = "00000000";
         userDTOTwo.email = "example2@example.com";
-        userDTOTwo.uuid = userIDsList.get(1); 
+        userDTOTwo.uuid = userIDsList.get(1);
 
-        users.put( userIDsList.get(0), userDTOOne);
-        users.put( userIDsList.get(1), userDTOTwo);
-        users.put( userIDsList.get(2), null);
+        users.put(userIDsList.get(0), userDTOOne);
+        users.put(userIDsList.get(1), userDTOTwo);
+        users.put(userIDsList.get(2), null);
 
         return users;
+
+    }
+
+    public Boolean mockValidateService(String serviceID) {
+
+       return serviceID.equals("123");
 
     }
 }

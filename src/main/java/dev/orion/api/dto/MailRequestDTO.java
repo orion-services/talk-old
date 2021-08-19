@@ -16,5 +16,6 @@ public class MailRequestDTO {
   @NotNull
   public Boolean sendToAll;
 
-}
+  public String templateID;
 
+}

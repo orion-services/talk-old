@@ -1,10 +1,11 @@
-package dev.orion.api;
+package dev.orion.api.controller.v1;
 
 import io.smallrye.common.annotation.Blocking;
 
 import javax.ws.rs.Produces;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -15,7 +16,7 @@ import dev.orion.services.interfaces.MailService;
 import dev.orion.services.interfaces.UserService;
 
 @Path("/mail")
-public class MailResource {
+public class MailResourceV1 {
 
     @Inject
     UserService userService;
@@ -39,11 +40,21 @@ public class MailResource {
 
         if (containsUserNull.equals(Boolean.TRUE) && sendToAll.equals(Boolean.FALSE)) {
 
-            return Response.notModified("tag").build();
+            return Response.status(403).build();
 
         } else {
 
-            mailService.sendMails(responses);
+            try {
+                mailService.sendMails(responses, mailRequestDTO.templateID);
+
+            } catch (IllegalArgumentException i) {
+
+                return Response.status(400, "invalid uuid format").build();
+
+            } catch (NotFoundException i) {
+
+                return Response.status(404, "template not found").build();
+            }
             return Response.ok(responses).build();
         }
 

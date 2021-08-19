@@ -1,6 +1,5 @@
 package dev.orion.api.dto;
 
-
 public class UserClientDTO {
 
     public String uuid;
@@ -10,5 +9,5 @@ public class UserClientDTO {
     public String email;
 
     public String cpf;
-        
+      
 }
